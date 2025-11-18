@@ -3,7 +3,7 @@ import io
 import base64
 from dataclasses import fields
 from enum import Enum
-from typing import Any, Type, TypeVar, Union, Optional
+from typing import Any, List, Type, TypeVar, Union, Optional
 from PIL import Image
 
 
@@ -123,7 +123,7 @@ def base64_to_image(data: str) -> Image.Image:
     return Image.open(io.BytesIO(image_data))
 
 
-def dict_similar(dict1: Union[dict, list], dict2: Union[dict, list], tolerance: float = 1e-9, ignore_keys: Optional[list[str]] = None) -> bool:
+def dict_similar(dict1: Union[dict, list], dict2: Union[dict, list], tolerance: float = 1e-9, ignore_keys: Optional[List[str]] = None) -> bool:
     """
     Check whether two dictionaries or lists are similar.
 
