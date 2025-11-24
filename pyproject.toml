@@ -8,6 +8,8 @@ version = "1.0.1"
 dependencies = [
     'torch',
     'numpy',
+    "dicttoxml",
+    "xmltodict",
 ]
 
 [tool.black]

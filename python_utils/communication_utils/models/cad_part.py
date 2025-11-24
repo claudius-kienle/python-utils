@@ -5,10 +5,10 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
-from llm_utils.communication_utils.models.directions import Direction
-from llm_utils.communication_utils.models.unique_color_supplier import Color, UniqueColorSupplier
-from llm_utils.communication_utils.models.view_orientation import ViewOrientation
-from llm_utils.communication_utils.utils.color_utils import get_color_name
+from python_utils.communication_utils.models.directions import Direction
+from python_utils.communication_utils.models.unique_color_supplier import Color, UniqueColorSupplier
+from python_utils.communication_utils.models.view_orientation import ViewOrientation
+from python_utils.communication_utils.utils.color_utils import get_color_name
 
 
 class CADFaceType(int, Enum):
