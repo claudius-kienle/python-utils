@@ -2,7 +2,7 @@ import ast
 import logging
 import re
 from datetime import timedelta
-from typing import List
+from typing import List, Union
 
 logger = logging.getLogger(__name__)
 
@@ -34,15 +34,18 @@ def wrap_code(code, lang):
     return f"```{lang}\n" + code + "\n```"
 
 
-def get_markup_from_text(text: str, markup: List[str]) -> List[str]:
+def get_markup_from_text(text: str, markup: Union[str, List[str]]) -> List[str]:
+    if isinstance(markup, str):
+        markup = [markup]
+
     markup_str = "|".join(markup)
     if markup.count("```") % 2 != 0:
         raise ValueError("Unmatched number of ``` in the text.")
 
-    markdown_cells = [match.strip() for match in re.findall(f"(```[\w\W]*?```)", text)]
+    markdown_cells = [match.strip() for match in re.findall(fr"(```[\w\W]*?```)", text)]
     correct_markdown_cells = []
     for markdown_cell in markdown_cells:
-        match = re.search(f"```(?:{markup_str})?[\n\s]([\w\W]+)```", markdown_cell)
+        match = re.search(fr"```(?:{markup_str})?[\n\s]([\w\W]+)```", markdown_cell)
         if match is None:
             continue
 
