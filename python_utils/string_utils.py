@@ -142,6 +142,11 @@ def extract_first_skill_list(text: str):
     # Split the first list into lines
     first_list = lists[0].strip().splitlines()
 
+    # If no line in the bullet list contains a function call, the LLM is expressing
+    # "no applicable skills" as prose bullets — treat as empty list.
+    if not any(re.search(func_regex, line.strip()) for line in first_list):
+        return []
+
     skills = []
     for line in first_list:
         match = re.search(func_regex, line.strip())
