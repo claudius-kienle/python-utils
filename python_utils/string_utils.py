@@ -7,12 +7,44 @@ from typing import List, Union
 logger = logging.getLogger(__name__)
 
 
-def remove_comments(text: str, comment_style: str = ";") -> str:
+def remove_comments(text: str, comment_style: str = ";", remove_string_literals: bool = False) -> str:
     # Remove single-line comments
     text = re.sub(rf"{comment_style}.*", "", text)
     # Remove multi-line comments
     # text = re.sub(r"\(\*[\s\S]*?\*\)", "", text)
+    if remove_string_literals:
+        try:
+            tree = ast.parse(text)
+
+            class StringLiteralRemover(ast.NodeTransformer):
+                def visit_Module(self, node):
+                    node.body = [n for n in node.body if not _is_string_expr(n)]
+                    return self.generic_visit(node)
+
+                def visit_FunctionDef(self, node):
+                    node.body = [n for n in node.body if not _is_string_expr(n)]
+                    return self.generic_visit(node)
+
+                def visit_AsyncFunctionDef(self, node):
+                    node.body = [n for n in node.body if not _is_string_expr(n)]
+                    return self.generic_visit(node)
+
+                def visit_ClassDef(self, node):
+                    node.body = [n for n in node.body if not _is_string_expr(n)]
+                    return self.generic_visit(node)
+
+            text = ast.unparse(StringLiteralRemover().visit(tree))
+        except Exception as e:
+            logger.warning(f"Failed to remove string literals: {e}")
     return text
+
+
+def _is_string_expr(node: ast.stmt) -> bool:
+    return (
+        isinstance(node, ast.Expr)
+        and isinstance(node.value, ast.Constant)
+        and isinstance(node.value.value, str)
+    )
 
 
 def parse_timedelta(td_string: str) -> timedelta:
